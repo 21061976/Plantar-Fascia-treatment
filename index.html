@@ -1,0 +1,1597 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="אפליקציה לניהול תוכנית טיפול בדלקת פאשיה פלנטרית">
+    <title>תוכנית טיפול עקב - אפליקציה מלאה</title>
+    
+    <style>
+        /* ===== גופנים ===== */
+        @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700&display=swap');
+        
+        /* ===== איפוס בסיסי ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Assistant', -apple-system, sans-serif;
+            background: linear-gradient(135deg, #e0f2fe 0%, #dcfce7 100%);
+            min-height: 100vh;
+            color: #1f2937;
+        }
+        
+        /* ===== מבנה ראשי ===== */
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* ===== כותרת קבועה ===== */
+        .app-header {
+            position: sticky;
+            top: 0;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+        
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .header-title h1 {
+            font-size: 28px;
+            color: #1f2937;
+            margin-bottom: 5px;
+        }
+        
+        .header-title p {
+            font-size: 14px;
+            color: #6b7280;
+        }
+        
+        .header-icon {
+            font-size: 48px;
+        }
+        
+        /* ===== הודעת חוקי הזהב ===== */
+        .golden-rules {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            border: 2px solid #3b82f6;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .golden-rules h3 {
+            color: #1e40af;
+            font-size: 16px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .golden-rules ul {
+            list-style: none;
+            font-size: 13px;
+            color: #1e40af;
+        }
+        
+        .golden-rules li {
+            margin-bottom: 5px;
+            padding-right: 0;
+        }
+        
+        /* ===== טאבים ===== */
+        .tabs-container {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            scrollbar-width: thin;
+        }
+        
+        .tab-button {
+            background: #e5e7eb;
+            color: #374151;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s;
+            font-family: 'Assistant', sans-serif;
+        }
+        
+        .tab-button:hover {
+            background: #d1d5db;
+        }
+        
+        .tab-button.active {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+        
+        /* ===== בחירת ימים ===== */
+        .days-selector {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .day-button {
+            background: #e5e7eb;
+            color: #374151;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s;
+            font-family: 'Assistant', sans-serif;
+        }
+        
+        .day-button:hover {
+            background: #d1d5db;
+        }
+        
+        .day-button.active {
+            background: linear-gradient(135deg, #a855f7, #9333ea);
+            color: white;
+            box-shadow: 0 4px 12px rgba(168, 85, 247, 0.4);
+        }
+        
+        /* ===== כפתור דילוג על טניס ===== */
+        .skip-tennis {
+            background: #fef3c7;
+            border: 2px solid #fbbf24;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        
+        .skip-tennis.show {
+            display: block;
+        }
+        
+        .skip-tennis-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .skip-tennis-info p {
+            font-size: 14px;
+            color: #92400e;
+            margin-bottom: 3px;
+        }
+        
+        .skip-tennis-info p:first-child {
+            font-weight: 600;
+        }
+        
+        .skip-tennis-button {
+            background: #d1d5db;
+            color: #374151;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Assistant', sans-serif;
+        }
+        
+        .skip-tennis-button.active {
+            background: #f97316;
+            color: white;
+        }
+        
+        .skip-notice {
+            font-size: 12px;
+            color: #c2410c;
+            margin-top: 8px;
+            display: none;
+        }
+        
+        .skip-notice.show {
+            display: block;
+        }
+        
+        /* ===== התקדמות ===== */
+        .progress-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .progress-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        .progress-percentage {
+            font-size: 14px;
+            font-weight: 700;
+            color: #3b82f6;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e5e7eb;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #22c55e);
+            border-radius: 20px;
+            transition: width 0.5s ease;
+        }
+        
+        .week-counter {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .week-info p {
+            font-size: 12px;
+            color: #6b7280;
+        }
+        
+        .week-number {
+            font-size: 20px;
+            font-weight: 700;
+            color: #a855f7;
+        }
+        
+        .week-next-button {
+            background: #a855f7;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Assistant', sans-serif;
+        }
+        
+        .week-next-button:hover {
+            background: #9333ea;
+        }
+        
+        /* ===== הודעת מוטיבציה ===== */
+        .motivation-message {
+            background: linear-gradient(135deg, #22c55e, #3b82f6);
+            color: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: none;
+            animation: slideIn 0.5s ease;
+        }
+        
+        .motivation-message.show {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .motivation-icon {
+            font-size: 32px;
+        }
+        
+        .motivation-text h3 {
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+        
+        .motivation-text p {
+            font-size: 14px;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        /* ===== יומן כאב ===== */
+        .pain-logger {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .pain-logger h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 12px;
+        }
+        
+        .pain-type {
+            margin-bottom: 12px;
+        }
+        
+        .pain-type label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+        
+        .pain-scale {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+            direction: ltr;
+        }
+        
+        .pain-button {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: #e5e7eb;
+            color: #6b7280;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .pain-button:hover {
+            background: #d1d5db;
+        }
+        
+        .pain-button.selected-low {
+            background: #22c55e;
+            color: white;
+        }
+        
+        .pain-button.selected-medium {
+            background: #eab308;
+            color: white;
+        }
+        
+        .pain-button.selected-high {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .pain-average {
+            background: #dbeafe;
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 12px;
+            text-align: center;
+        }
+        
+        .pain-average p {
+            font-size: 14px;
+            color: #1e40af;
+        }
+        
+        .pain-average strong {
+            font-size: 18px;
+        }
+        
+        /* ===== קלפי משימות ===== */
+        .task-section {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .task-section.critical {
+            border: 4px solid #fca5a5;
+        }
+        
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .task-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .task-title-icon {
+            font-size: 24px;
+        }
+        
+        .task-title h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+        
+        .task-title h3.critical {
+            color: #dc2626;
+        }
+        
+        .task-counter {
+            font-size: 14px;
+            color: #6b7280;
+        }
+        
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .task-item {
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        
+        .task-item:hover {
+            background: #f3f4f6;
+        }
+        
+        .task-item.completed {
+            background: #dcfce7;
+            border-color: #86efac;
+        }
+        
+        .task-item.critical {
+            background: #fef2f2;
+            border-color: #fca5a5;
+        }
+        
+        .task-item.critical:hover {
+            background: #fee2e2;
+        }
+        
+        .task-checkbox {
+            font-size: 24px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        
+        .task-content {
+            flex: 1;
+        }
+        
+        .task-text {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+        
+        .task-item.completed .task-text {
+            text-decoration: line-through;
+            color: #6b7280;
+        }
+        
+        .task-detail {
+            font-size: 13px;
+            color: #6b7280;
+            margin-bottom: 6px;
+        }
+        
+        .task-time {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 4px;
+            font-size: 12px;
+            color: #9ca3af;
+        }
+        
+        .task-time-icon {
+            font-size: 12px;
+        }
+        
+        /* ===== טיפים ===== */
+        .tips-card {
+            background: linear-gradient(135deg, #fef3c7, #fed7aa);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .tips-card h3 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            color: #78350f;
+            margin-bottom: 12px;
+        }
+        
+        .tips-card p {
+            font-size: 14px;
+            color: #78350f;
+            line-height: 1.6;
+        }
+        
+        /* ===== מדריך מתיחות ===== */
+        .guide-section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .guide-section h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 15px;
+        }
+        
+        .guide-diagram {
+            background: #f3f4f6;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            white-space: pre-line;
+            direction: ltr;
+        }
+        
+        .guide-steps {
+            list-style: none;
+            counter-reset: step-counter;
+        }
+        
+        .guide-steps li {
+            counter-increment: step-counter;
+            margin-bottom: 10px;
+            padding-right: 35px;
+            position: relative;
+            font-size: 14px;
+            color: #374151;
+            line-height: 1.6;
+        }
+        
+        .guide-steps li::before {
+            content: counter(step-counter) ".";
+            position: absolute;
+            right: 0;
+            font-weight: 700;
+            color: #3b82f6;
+        }
+        
+        .guide-steps li strong {
+            color: #1f2937;
+        }
+        
+        .guide-warning {
+            background: #fef2f2;
+            border-right: 4px solid #dc2626;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 15px;
+        }
+        
+        .guide-warning p {
+            font-size: 13px;
+            color: #991b1b;
+        }
+        
+        .guide-tip {
+            background: #dbeafe;
+            border-right: 4px solid #3b82f6;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 15px;
+        }
+        
+        .guide-tip p {
+            font-size: 13px;
+            color: #1e40af;
+        }
+        
+        /* ===== שאלות נפוצות ===== */
+        .faq-item {
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .faq-question {
+            width: 100%;
+            background: white;
+            border: none;
+            padding: 15px;
+            text-align: right;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Assistant', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            color: #1f2937;
+            transition: background 0.3s;
+        }
+        
+        .faq-question:hover {
+            background: #f9fafb;
+        }
+        
+        .faq-icon {
+            font-size: 20px;
+            color: #6b7280;
+            flex-shrink: 0;
+        }
+        
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .faq-answer.open {
+            max-height: 500px;
+        }
+        
+        .faq-answer-content {
+            padding: 15px;
+            font-size: 14px;
+            color: #374151;
+            line-height: 1.7;
+        }
+        
+        /* ===== התקדמות שבועית ===== */
+        .progress-tracker {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .progress-tracker h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 20px;
+        }
+        
+        .progress-week {
+            margin-bottom: 15px;
+        }
+        
+        .progress-week-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .progress-week-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        .progress-week-desc {
+            font-size: 13px;
+            color: #6b7280;
+        }
+        
+        .progress-week-bar-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .progress-week-bar {
+            flex: 1;
+            height: 16px;
+            background: #e5e7eb;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        
+        .progress-week-fill {
+            height: 100%;
+            border-radius: 20px;
+            transition: width 0.5s ease;
+        }
+        
+        .progress-week-number {
+            font-size: 14px;
+            font-weight: 700;
+            color: #374151;
+            min-width: 35px;
+        }
+        
+        .milestone-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .milestone-item.reached {
+            background: #dcfce7;
+            border: 2px solid #86efac;
+        }
+        
+        .milestone-item.not-reached {
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+        }
+        
+        .milestone-icon {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+        
+        .milestone-text {
+            flex: 1;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .milestone-text.reached {
+            color: #166534;
+        }
+        
+        .milestone-text.not-reached {
+            color: #374151;
+        }
+        
+        /* ===== פוטר ===== */
+        .app-footer {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .app-footer p {
+            font-size: 13px;
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+        
+        .app-footer p:first-child {
+            font-weight: 700;
+            color: #1f2937;
+        }
+        
+        /* ===== כללי עזר ===== */
+        .hidden {
+            display: none !important;
+        }
+        
+        /* ===== responsive ===== */
+        @media (max-width: 768px) {
+            .app-container {
+                padding: 10px;
+            }
+            
+            .header-top h1 {
+                font-size: 22px;
+            }
+            
+            .header-icon {
+                font-size: 36px;
+            }
+            
+            .tab-button {
+                padding: 8px 14px;
+                font-size: 13px;
+            }
+            
+            .day-button {
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+        }
+        
+        /* ===== scrollbar ===== */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- כותרת ראשית -->
+        <header class="app-header">
+            <div class="header-top">
+                <div class="header-title">
+                    <h1>תוכנית הטיפול שלי 🎾</h1>
+                    <p>דלקת בפאשיה פלנטרית</p>
+                </div>
+                <div class="header-icon" id="dayTypeIcon">🎾</div>
+            </div>
+            
+            <!-- חוקי הזהב -->
+            <div class="golden-rules">
+                <h3>⚠️ חוקי הזהב:</h3>
+                <ul>
+                    <li>• <strong>לא שיחקתי טניס היום?</strong> תעשה בכל זאת בוקר + ערב רגיל!</li>
+                    <li>• <strong>למה?</strong> הדלקת צריכה טיפול כל יום - גם בלי פעילות</li>
+                    <li>• <strong>שכחתי משהו?</strong> לא נורא - פשוט תמשיך מחר</li>
+                </ul>
+            </div>
+            
+            <!-- טאבים -->
+            <div class="tabs-container">
+                <button class="tab-button active" onclick="switchTab('daily')">📋 יומי</button>
+                <button class="tab-button" onclick="switchTab('guide')">📖 מדריך מתיחות</button>
+                <button class="tab-button" onclick="switchTab('faq')">❓ שאלות נפוצות</button>
+                <button class="tab-button" onclick="switchTab('progress')">📊 התקדמות</button>
+            </div>
+        </header>
+        
+        <!-- תוכן ראשי -->
+        <main>
+            <!-- טאב יומי -->
+            <div id="dailyTab" class="tab-content">
+                <!-- בחירת ימים -->
+                <div class="days-selector" id="daysSelector"></div>
+                
+                <!-- דילוג על טניס -->
+                <div class="skip-tennis" id="skipTennisContainer">
+                    <div class="skip-tennis-content">
+                        <div class="skip-tennis-info">
+                            <p>לא שיחקתי טניס היום?</p>
+                            <p style="font-size: 12px; font-weight: 400;">לחץ כאן אם ביטלת את האימון</p>
+                        </div>
+                        <button class="skip-tennis-button" onclick="toggleSkipTennis()">דלג על טניס</button>
+                    </div>
+                    <p class="skip-notice" id="skipNotice">
+                        💡 זכור: עדיין תעשה בוקר + ערב מלאים! הדלקת צריכה טיפול גם בלי טניס.
+                    </p>
+                </div>
+                
+                <!-- התקדמות -->
+                <div class="progress-card">
+                    <div class="progress-header">
+                        <span class="progress-label">התקדמות היום</span>
+                        <span class="progress-percentage" id="progressPercentage">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                    </div>
+                    <div class="week-counter">
+                        <div class="week-info">
+                            <p>שבוע מספר</p>
+                            <p class="week-number" id="weekNumber">1</p>
+                        </div>
+                        <button class="week-next-button" onclick="nextWeek()">שבוע הבא</button>
+                    </div>
+                </div>
+                
+                <!-- הודעת מוטיבציה -->
+                <div class="motivation-message" id="motivationMessage">
+                    <div class="motivation-icon">🏆</div>
+                    <div class="motivation-text">
+                        <h3>כל הכבוד! 🎉</h3>
+                        <p>השלמת את כל המשימות היום - המשך כך!</p>
+                    </div>
+                </div>
+                
+                <!-- יומן כאב -->
+                <div class="pain-logger">
+                    <h3>📊 תיעוד כאב היום</h3>
+                    <div id="painLoggerContainer"></div>
+                </div>
+                
+                <!-- משימות -->
+                <div id="tasksContainer"></div>
+                
+                <!-- טיפים -->
+                <div class="tips-card">
+                    <h3><span>💡</span> <span id="tipTitle">טיפ היום</span></h3>
+                    <p id="tipContent"></p>
+                </div>
+            </div>
+            
+            <!-- טאב מדריך -->
+            <div id="guideTab" class="tab-content hidden">
+                <div id="guideContainer"></div>
+            </div>
+            
+            <!-- טאב FAQ -->
+            <div id="faqTab" class="tab-content hidden">
+                <div id="faqContainer"></div>
+            </div>
+            
+            <!-- טאב התקדמות -->
+            <div id="progressTab" class="tab-content hidden">
+                <div id="progressContainer"></div>
+            </div>
+        </main>
+        
+        <!-- פוטר -->
+        <footer class="app-footer">
+            <p>💪 זכור: הדרך לריפוי היא מרתון, לא ספרינט</p>
+            <p>עקביות + סבלנות + התמדה = חזרה לטניס בלי כאב! 🎾</p>
+        </footer>
+    </div>
+
+    <script>
+        // ===== נתונים גלובליים =====
+        const daysOfWeek = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
+        const dayTypes = {
+            0: 'tennis', 1: 'rest', 2: 'tennis', 3: 'rest', 
+            4: 'tennis', 5: 'yoga', 6: 'rest'
+        };
+        
+        let currentDay = new Date().getDay();
+        let completedTasks = JSON.parse(localStorage.getItem('completedTasks') || '{}');
+        let painLog = JSON.parse(localStorage.getItem('painLog') || '[]');
+        let weekNumber = parseInt(localStorage.getItem('weekNumber') || '1');
+        let skipTennis = false;
+        let currentTab = 'daily';
+        
+        // ===== פונקציות עזר =====
+        function saveData() {
+            localStorage.setItem('completedTasks', JSON.stringify(completedTasks));
+            localStorage.setItem('painLog', JSON.stringify(painLog));
+            localStorage.setItem('weekNumber', weekNumber.toString());
+        }
+        
+        function getDayType(day) {
+            return dayTypes[day];
+        }
+        
+        function getDayIcon(type) {
+            if (type === 'tennis') return '🎾';
+            if (type === 'yoga') return '🧘';
+            return '🛋️';
+        }
+        
+        // ===== משימות =====
+        function getTasks() {
+            const type = getDayType(currentDay);
+            
+            const morningTasks = [
+                { id: 'm1', text: 'מתיחת כף רגל עם מגבת/חגורה', detail: 'משוך לעצמך בעדינות, 30 שניות × 3', time: '2 דק׳' },
+                { id: 'm2', text: 'סיבובי קרסול עדינים', detail: '10 פעמים לכל כיוון', time: '1 דק׳' },
+                { id: 'm3', text: 'ישיבה על קצה המיטה', detail: 'דקה שלמה לפני עמידה', time: '1 דק׳' },
+                { id: 'm4', text: 'הליכה איטית בהתחלה', detail: 'הצעדים הראשונים צריכים להיות מאוד איטיים', time: '1 דק׳' }
+            ];
+            
+            const eveningTasks = [
+                { id: 'e1', text: 'אמבט רגליים חם עם מלח גס', detail: 'מים חמימים, לא רותחים', time: '5 דק׳' },
+                { id: 'e2', text: 'אקדח מסאג׳ לשריר התאומים', detail: 'לחץ בינוני, מהקרסול למעלה, 3-4 דק׳ לכל רגל', time: '6-8 דק׳' },
+                { id: 'e3', text: 'מכשיר הום מדיקס לכפות', detail: 'עוצמה נוחה, הפעל חום אם יש', time: '5 דק׳' },
+                { id: 'e4', text: 'גלגול כדור טניס', detail: 'לחץ בינוני, התמקד בקשת כף הרגל, 3-4 דק׳ לכל רגל', time: '6-8 דק׳' },
+                { id: 'e5', text: 'מתיחת תאומים וסולאוס', detail: '30 שניות × 3 לכל שריר ולכל רגל', time: '4 דק׳' },
+                { id: 'e6', text: 'מתיחה בישיבה עם מגבת', detail: 'ברכיים ישרות, 30 שניות × 2', time: '2 דק׳' }
+            ];
+            
+            if (type === 'tennis' && skipTennis) {
+                return { morning: morningTasks, evening: eveningTasks };
+            }
+            
+            if (type === 'tennis') {
+                return {
+                    morning: morningTasks,
+                    preTennis: [
+                        { id: 'pt1', text: 'חימום כללי', detail: 'הליכה מהירה או ריצה קלה', time: '5 דק׳' },
+                        { id: 'pt2', text: 'מתיחת שריר תאומים', detail: 'רגל ישרה מאחור, עקב לרצפה, 30 שניות × 3 לכל רגל', time: '2 דק׳' },
+                        { id: 'pt3', text: 'מתיחת סולאוס', detail: 'אותו מצב, ברך כפופה, 30 שניות × 3 לכל רגל', time: '2 דק׳' },
+                        { id: 'pt4', text: 'משיכת אצבעות כלפי מעלה', detail: '30 שניות × 2', time: '1 דק׳' }
+                    ],
+                    postTennis: [
+                        { id: 'post1', text: '❄️ קרח על העקב או בקבוק קפוא', detail: 'זה החלק הכי חשוב! מונע דלקת', time: '15-20 דק׳', critical: true },
+                        { id: 'post2', text: 'מתיחה עדינה של שריר תאומים', detail: '30 שניות × 2 בלבד', time: '2 דק׳' }
+                    ],
+                    evening: eveningTasks
+                };
+            } else if (type === 'yoga') {
+                return {
+                    morning: morningTasks,
+                    yoga: [
+                        { id: 'y1', text: 'Downward Dog - מתיחת שוק ופאשיה', detail: 'הסבר למורה על המצב, הישאר בתנוחה זמן ארוך', time: 'במהלך השיעור' },
+                        { id: 'y2', text: 'Virasana - גמישות כפות רגליים', detail: 'עשה בעדינות!', time: 'במהלך השיעור' },
+                        { id: 'y3', text: 'Toe Stretches - בסוף השיעור', detail: 'מתיחת אצבעות כף הרגל', time: 'במהלך השיעור' }
+                    ],
+                    evening: [
+                        { id: 'ey1', text: 'עיסוי עם אקדח והום מדיקס', detail: 'שגרה מקוצרת', time: '10 דק׳' },
+                        { id: 'ey2', text: 'גלגול כדור טניס', detail: 'קצר ממש', time: '3 דק׳' },
+                        { id: 'ey3', text: 'מתיחה אחת של כל שריר', detail: 'לא צריך חזרות', time: '2 דק׳' }
+                    ]
+                };
+            } else {
+                return { morning: morningTasks, evening: eveningTasks };
+            }
+        }
+        
+        function toggleTask(taskId) {
+            completedTasks[taskId] = !completedTasks[taskId];
+            saveData();
+            updateProgress();
+            renderTasks();
+        }
+        
+        function getProgress() {
+            const tasks = getTasks();
+            const allTasks = [
+                ...(tasks.morning || []),
+                ...(tasks.preTennis || []),
+                ...(tasks.postTennis || []),
+                ...(tasks.yoga || []),
+                ...(tasks.evening || [])
+            ];
+            const completed = allTasks.filter(t => completedTasks[t.id]).length;
+            return allTasks.length > 0 ? Math.round((completed / allTasks.length) * 100) : 0;
+        }
+        
+        function updateProgress() {
+            const progress = getProgress();
+            document.getElementById('progressPercentage').textContent = progress + '%';
+            document.getElementById('progressFill').style.width = progress + '%';
+            
+            const motivationMsg = document.getElementById('motivationMessage');
+            if (progress === 100) {
+                motivationMsg.classList.add('show');
+            } else {
+                motivationMsg.classList.remove('show');
+            }
+        }
+        
+        function renderTasks() {
+            const tasks = getTasks();
+            const container = document.getElementById('tasksContainer');
+            container.innerHTML = '';
+            
+            const sections = [
+                { key: 'morning', title: '🌅 שגרת בוקר (במיטה!)', icon: '☀️' },
+                { key: 'preTennis', title: '🎾 לפני טניס', icon: '🏃' },
+                { key: 'postTennis', title: '❄️ מיד אחרי טניס - קריטי!', icon: '🚨', critical: true },
+                { key: 'yoga', title: '🧘 ביוגה', icon: '🕉️' },
+                { key: 'evening', title: '🌙 שגרת ערב', icon: '🌜' }
+            ];
+            
+            sections.forEach(section => {
+                if (tasks[section.key]) {
+                    const sectionEl = createTaskSection(section, tasks[section.key]);
+                    container.appendChild(sectionEl);
+                }
+            });
+            
+            updateProgress();
+        }
+        
+        function createTaskSection(section, tasks) {
+            const completed = tasks.filter(t => completedTasks[t.id]).length;
+            
+            const sectionEl = document.createElement('div');
+            sectionEl.className = 'task-section' + (section.critical ? ' critical' : '');
+            
+            sectionEl.innerHTML = `
+                <div class="task-header">
+                    <div class="task-title">
+                        <span class="task-title-icon">${section.icon}</span>
+                        <h3 class="${section.critical ? 'critical' : ''}">${section.title}</h3>
+                    </div>
+                    <span class="task-counter">${completed}/${tasks.length}</span>
+                </div>
+                <div class="task-list" id="${section.key}-list"></div>
+            `;
+            
+            const listEl = sectionEl.querySelector(`#${section.key}-list`);
+            tasks.forEach(task => {
+                const taskEl = createTaskElement(task);
+                listEl.appendChild(taskEl);
+            });
+            
+            return sectionEl;
+        }
+        
+        function createTaskElement(task) {
+            const isCompleted = completedTasks[task.id];
+            const taskEl = document.createElement('div');
+            taskEl.className = 'task-item' + 
+                (isCompleted ? ' completed' : '') + 
+                (task.critical ? ' critical' : '');
+            taskEl.onclick = () => toggleTask(task.id);
+            
+            taskEl.innerHTML = `
+                <div class="task-checkbox">${isCompleted ? '✅' : '⭕'}</div>
+                <div class="task-content">
+                    <div class="task-text">${task.text}</div>
+                    <div class="task-detail">${task.detail}</div>
+                    <div class="task-time">
+                        <span>${task.time}</span>
+                        <span class="task-time-icon">🕐</span>
+                    </div>
+                </div>
+            `;
+            
+            return taskEl;
+        }
+        
+        // ===== ימים =====
+        function renderDays() {
+            const container = document.getElementById('daysSelector');
+            container.innerHTML = '';
+            
+            daysOfWeek.forEach((day, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'day-button' + (index === currentDay ? ' active' : '');
+                btn.textContent = day;
+                btn.onclick = () => selectDay(index);
+                container.appendChild(btn);
+            });
+        }
+        
+        function selectDay(day) {
+            currentDay = day;
+            skipTennis = false;
+            updateDayInterface();
+        }
+        
+        function updateDayInterface() {
+            const type = getDayType(currentDay);
+            document.getElementById('dayTypeIcon').textContent = getDayIcon(type);
+            
+            // עדכון כפתורים
+            document.querySelectorAll('.day-button').forEach((btn, index) => {
+                if (index === currentDay) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            // הצג/הסתר דילוג טניס
+            const skipContainer = document.getElementById('skipTennisContainer');
+            if (type === 'tennis') {
+                skipContainer.classList.add('show');
+            } else {
+                skipContainer.classList.remove('show');
+            }
+            
+            // עדכון כפתור דילוג
+            const skipBtn = document.querySelector('.skip-tennis-button');
+            const skipNotice = document.getElementById('skipNotice');
+            if (skipTennis) {
+                skipBtn.classList.add('active');
+                skipBtn.textContent = '✓ דילגתי';
+                skipNotice.classList.add('show');
+            } else {
+                skipBtn.classList.remove('active');
+                skipBtn.textContent = 'דלג על טניס';
+                skipNotice.classList.remove('show');
+            }
+            
+            // טיפ היום
+            updateTip();
+            
+            // עדכון משימות
+            renderTasks();
+        }
+        
+        function toggleSkipTennis() {
+            skipTennis = !skipTennis;
+            updateDayInterface();
+        }
+        
+        function updateTip() {
+            const type = getDayType(currentDay);
+            const tipTitle = document.getElementById('tipTitle');
+            const tipContent = document.getElementById('tipContent');
+            
+            tipTitle.textContent = `טיפ ליום ${daysOfWeek[currentDay]}`;
+            
+            if (type === 'tennis') {
+                tipContent.textContent = 'הקרח אחרי האימון הוא הכי חשוב - זה מונע דלקת! אל תדלג עליו גם אם מרגיש טוב.';
+            } else if (type === 'yoga') {
+                tipContent.textContent = 'דבר עם המורה על המצב שלך - הם יכולים לעזור עם תנוחות ממוקדות למתיחת השוק והפאשיה.';
+            } else {
+                tipContent.textContent = 'יום מנוחה לא אומר לוותר על הטיפול! העיסוי והמתיחות חשובים גם היום - זה הזמן לגוף להתאושש.';
+            }
+        }
+        
+        // ===== יומן כאב =====
+        function renderPainLogger() {
+            const container = document.getElementById('painLoggerContainer');
+            const today = new Date().toLocaleDateString('he-IL');
+            const todayLogs = painLog.filter(log => log.date === today);
+            
+            const types = ['בוקר', 'אחרי טניס', 'ערב'];
+            container.innerHTML = '';
+            
+            types.forEach(type => {
+                const log = todayLogs.find(l => l.type === type);
+                const typeEl = document.createElement('div');
+                typeEl.className = 'pain-type';
+                
+                let scaleHTML = '';
+                for (let i = 1; i <= 10; i++) {
+                    const selected = log && log.level === i;
+                    const className = selected ? 
+                        (i <= 3 ? 'selected-low' : i <= 6 ? 'selected-medium' : 'selected-high') : '';
+                    scaleHTML += `<button class="pain-button ${className}" onclick="logPain('${type}', ${i})">${i}</button>`;
+                }
+                
+                typeEl.innerHTML = `
+                    <label>${type}</label>
+                    <div class="pain-scale">${scaleHTML}</div>
+                `;
+                
+                container.appendChild(typeEl);
+            });
+            
+            if (todayLogs.length > 0) {
+                const avg = Math.round(todayLogs.reduce((sum, log) => sum + log.level, 0) / todayLogs.length);
+                const avgEl = document.createElement('div');
+                avgEl.className = 'pain-average';
+                avgEl.innerHTML = `<p>ממוצע כאב היום: <strong>${avg}</strong>/10</p>`;
+                container.appendChild(avgEl);
+            }
+        }
+        
+        function logPain(type, level) {
+            const today = new Date().toLocaleDateString('he-IL');
+            painLog = painLog.filter(log => !(log.date === today && log.type === type));
+            painLog.push({ date: today, type, level });
+            saveData();
+            renderPainLogger();
+        }
+        
+        // ===== שבועות =====
+        function nextWeek() {
+            weekNumber++;
+            document.getElementById('weekNumber').textContent = weekNumber;
+            saveData();
+            if (currentTab === 'progress') {
+                renderProgress();
+            }
+        }
+        
+        // ===== טאבים =====
+        function switchTab(tab) {
+            currentTab = tab;
+            
+            // עדכון כפתורים
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // הסתרת כל הטאבים
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            // הצגת הטאב הנוכחי
+            if (tab === 'daily') {
+                document.getElementById('dailyTab').classList.remove('hidden');
+            } else if (tab === 'guide') {
+                document.getElementById('guideTab').classList.remove('hidden');
+                renderGuide();
+            } else if (tab === 'faq') {
+                document.getElementById('faqTab').classList.remove('hidden');
+                renderFAQ();
+            } else if (tab === 'progress') {
+                document.getElementById('progressTab').classList.remove('hidden');
+                renderProgress();
+            }
+        }
+        
+        // ===== מדריך =====
+        function renderGuide() {
+            const container = document.getElementById('guideContainer');
+            container.innerHTML = `
+                <div class="guide-section">
+                    <h3>מתיחת שריר התאומים (Gastrocnemius)</h3>
+                    <div class="guide-diagram">    🧍 אתה
+    |
+    |  → קיר
+    🦵 רגל אחורית ישרה
+    👟 עקב דבוק לרצפה</div>
+                    <ol class="guide-steps">
+                        <li>עמוד מול קיר במרחק כ-60 ס"מ</li>
+                        <li>צעד רגל אחת אחורה, <strong>שמור עליה ישרה לגמרי</strong></li>
+                        <li>לחץ את העקב האחורי לרצפה</li>
+                        <li>התכופף קדימה אל הקיר - מרגישים מתיחה בשוק</li>
+                        <li><strong>נשימה:</strong> שאוף עמוק, נשוף לאט</li>
+                        <li>החזק <strong>30 שניות ללא תזוזה</strong></li>
+                        <li>חזור <strong>3 פעמים</strong> לכל רגל</li>
+                    </ol>
+                    <div class="guide-warning">
+                        <p>⚠️ <strong>טעות נפוצה:</strong> הרגל האחורית מתכופפת → וודא שהיא ישרה!</p>
+                    </div>
+                </div>
+                
+                <div class="guide-section">
+                    <h3>מתיחת שריר הסולאוס (Soleus)</h3>
+                    <div class="guide-diagram">    🧍 אתה
+    |
+    |  → קיר
+    🦵 רגל אחורית עם ברך מעט כפופה
+    👟 עקב דבוק לרצפה</div>
+                    <ol class="guide-steps">
+                        <li><strong>אותו מצב בדיוק כמו למעלה</strong></li>
+                        <li>עכשיו <strong>כופף מעט את הברך האחורית</strong> (10-15 מעלות)</li>
+                        <li>המתיחה <strong>תרד נמוך יותר</strong> בשוק</li>
+                        <li>לחץ עקב לרצפה</li>
+                        <li><strong>נשימה:</strong> עמוקה ורגועה</li>
+                        <li>החזק <strong>30 שניות</strong></li>
+                        <li>חזור <strong>3 פעמים</strong> לכל רגל</li>
+                    </ol>
+                    <div class="guide-tip">
+                        <p>💡 <strong>למה 2 מתיחות?</strong> כי יש 2 שרירים בשוק - צריך למתוח את שניהם!</p>
+                    </div>
+                </div>
+                
+                <div class="guide-section">
+                    <h3>מתיחת הפאשיה בישיבה</h3>
+                    <div class="guide-diagram">    🪑 אתה יושב
+    👣 רגליים ישרות
+    🧻 מגבת כרוכה סביב כפות
+    ⬅️ משוך לעצמך</div>
+                    <ol class="guide-steps">
+                        <li>שב על הרצפה, גב ישר</li>
+                        <li>רגליים <strong>ישרות לגמרי</strong> לפניך</li>
+                        <li>כרוך מגבת סביב כפות הרגליים</li>
+                        <li>משוך את המגבת לעצמך</li>
+                        <li>אצבעות כף הרגל מופנות <strong>אלייך</strong></li>
+                        <li><strong>ברכיים חייבות להישאר ישרות!</strong></li>
+                        <li>החזק <strong>30 שניות</strong></li>
+                        <li>חזור <strong>2 פעמים</strong></li>
+                    </ol>
+                    <div class="guide-warning">
+                        <p>⚠️ <strong>אם קשה:</strong> כופף מעט את הברכיים, אבל נסה לשמור אותן ישרות ככל האפשר</p>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // ===== שאלות נפוצות =====
+        function renderFAQ() {
+            const faqs = [
+                {
+                    q: 'שכחתי לעשות את שגרת הבוקר - מה עושים?',
+                    a: 'אם עברו פחות מ-15 דקות - עשה עכשיו! אם עברה שעה או יותר - לא נורא, פשוט תוודא שתעשה את שגרת הערב. העיקר - אל תוותר על כל היום בגלל דילוג אחד!'
+                },
+                {
+                    q: 'שכחתי לעשות קרח אחרי טניס - עכשיו מה?',
+                    a: 'עברו פחות משעתיים? עשה קרח עכשיו - זה עדיין יעזור! עברו יותר? אין טעם בקרח כבר, אבל תוודא שתעשה את שגרת הערב המלאה ושים קרח נוסף בערב אם יש כאב.'
+                },
+                {
+                    q: 'לא שיחקתי טניס היום כמתוכנן - מה עכשיו?',
+                    a: 'פשוט מאוד: עשה בוקר רגיל (5 דק׳) + עשה ערב מלא (25-30 דק׳). פשוט דלג על "לפני טניס" ו"אחרי טניס". זכור: הטיפול לא תלוי בטניס! הדלקת צריכה טיפול כל יום.'
+                },
+                {
+                    q: 'היה לי יום עמוס ושכחתי הכל - מה עושים?',
+                    a: 'לא נורא - דברים קורים! אל תוותר גם על היום שאחרי. מינימום: בוקר - מתיחות במיטה (5 דק׳), ערב - גלגול כדור + מתיחה אחת (10 דק׳). רק תזכור: אם תדלג הרבה ימים - הדלקת תחזור!'
+                },
+                {
+                    q: 'אני עייף מדי לעשות 30 דקות בערב - אפשר לקצר?',
+                    a: 'במצבים חריגים - כן. מינימום מצומצם (15 דק׳): אמבט חם 3 דק׳ + עיסוי אקדח 4 דק׳ + גלגול כדור 4 דק׳ + מתיחה אחת 4 דק׳. אבל זה רק למצבים חריגים! השגרה המלאה יעילה הרבה יותר.'
+                },
+                {
+                    q: 'מתי אמור להתחיל להרגיש שיפור?',
+                    a: 'שבוע 1: כאב בוקר קצת פחות חזק. שבוע 2: צליעה מתקצרת ל-15-20 דקות. שבוע 3: שיפור ניכר, פחות רגישות. שבוע 4: כמעט בלי כאב בימים רגילים. אם אין שיפור אחרי 4 שבועות - חזור לרופא!'
+                },
+                {
+                    q: 'עשיתי הכל נכון 4 שבועות ואין שיפור - מה עכשיו?',
+                    a: 'זה הזמן לשלב הבא: (1) טיפול בגלי הלם (ESWT) - 3-5 טיפולים, (2) סוליות אורתופדיות מותאמות אישית, (3) פיזיותרפיה מקצועית 2-3 חודשים, (4) שקול חוות דעת שנייה מאורטופד אחר.'
+                }
+            ];
+            
+            const container = document.getElementById('faqContainer');
+            container.innerHTML = '';
+            
+            faqs.forEach((faq, index) => {
+                const faqEl = document.createElement('div');
+                faqEl.className = 'faq-item';
+                faqEl.innerHTML = `
+                    <button class="faq-question" onclick="toggleFAQ(${index})">
+                        <span>${faq.q}</span>
+                        <span class="faq-icon" id="faq-icon-${index}">▼</span>
+                    </button>
+                    <div class="faq-answer" id="faq-answer-${index}">
+                        <div class="faq-answer-content">${faq.a}</div>
+                    </div>
+                `;
+                container.appendChild(faqEl);
+            });
+        }
+        
+        function toggleFAQ(index) {
+            const answer = document.getElementById(`faq-answer-${index}`);
+            const icon = document.getElementById(`faq-icon-${index}`);
+            
+            if (answer.classList.contains('open')) {
+                answer.classList.remove('open');
+                icon.textContent = '▼';
+            } else {
+                // סגור את כל האחרים
+                document.querySelectorAll('.faq-answer').forEach(a => a.classList.remove('open'));
+                document.querySelectorAll('.faq-icon').forEach(i => i.textContent = '▼');
+                
+                // פתח את הנוכחי
+                answer.classList.add('open');
+                icon.textContent = '▲';
+            }
+        }
+        
+        // ===== התקדמות =====
+        function renderProgress() {
+            const container = document.getElementById('progressContainer');
+            container.innerHTML = `
+                <div class="progress-tracker">
+                    <h3>📈 תרשים התקדמות צפויה</h3>
+                    <div class="progress-week">
+                        <div class="progress-week-header">
+                            <span class="progress-week-label">שבוע 1-2</span>
+                            <span class="progress-week-desc">התחלה - צליעה מתחת ל-20 דקות</span>
+                        </div>
+                        <div class="progress-week-bar-container">
+                            <div class="progress-week-bar">
+                                <div class="progress-week-fill" style="width: 30%; background: #ef4444;"></div>
+                            </div>
+                            <span class="progress-week-number">7/10</span>
+                        </div>
+                    </div>
+                    
+                    <div class="progress-week">
+                        <div class="progress-week-header">
+                            <span class="progress-week-label">שבוע 3-4</span>
+                            <span class="progress-week-desc">שיפור ניכר - צליעה 5-10 דקות</span>
+                        </div>
+                        <div class="progress-week-bar-container">
+                            <div class="progress-week-bar">
+                                <div class="progress-week-fill" style="width: 50%; background: #f97316;"></div>
+                            </div>
+                            <span class="progress-week-number">5/10</span>
+                        </div>
+                    </div>
+                    
+                    <div class="progress-week">
+                        <div class="progress-week-header">
+                            <span class="progress-week-label">שבוע 5-6</span>
+                            <span class="progress-week-desc">כמעט בלי כאב בבוקר</span>
+                        </div>
+                        <div class="progress-week-bar-container">
+                            <div class="progress-week-bar">
+                                <div class="progress-week-fill" style="width: 80%; background: #eab308;"></div>
+                            </div>
+                            <span class="progress-week-number">2/10</span>
+                        </div>
+                    </div>
+                    
+                    <div class="progress-week">
+                        <div class="progress-week-header">
+                            <span class="progress-week-label">שבוע 7-8</span>
+                            <span class="progress-week-desc">חזרה מלאה! 🎉</span>
+                        </div>
+                        <div class="progress-week-bar-container">
+                            <div class="progress-week-bar">
+                                <div class="progress-week-fill" style="width: 100%; background: #22c55e;"></div>
+                            </div>
+                            <span class="progress-week-number">0/10</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="progress-tracker">
+                    <h3>🎯 ציוני דרך</h3>
+                    ${renderMilestones()}
+                </div>
+            `;
+        }
+        
+        function renderMilestones() {
+            const milestones = [
+                { week: 2, goal: 'הקלה בכאב הבוקר' },
+                { week: 4, goal: 'הפחתת רגישות במהלך היום' },
+                { week: 6, goal: 'חזרה מלאה לטניס ללא אי נוחות' },
+                { week: 8, goal: 'שמירה על התוצאות' }
+            ];
+            
+            return milestones.map(m => {
+                const reached = weekNumber >= m.week;
+                return `
+                    <div class="milestone-item ${reached ? 'reached' : 'not-reached'}">
+                        <div class="milestone-icon">${reached ? '✅' : '⭕'}</div>
+                        <div class="milestone-text ${reached ? 'reached' : 'not-reached'}">
+                            שבוע ${m.week}: ${m.goal}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // ===== אתחול =====
+        function init() {
+            document.getElementById('weekNumber').textContent = weekNumber;
+            renderDays();
+            updateDayInterface();
+            renderPainLogger();
+        }
+        
+        // הרץ בטעינת הדף
+        init();
+    </script>
+</body>
+</html>
